@@ -38,8 +38,9 @@ pipeline {
         }
         stage('Security Scan') {
             steps {
-                // Run security scans using tools like OWASP Dependency-Check
-                sh 'dependency-check.sh'
+                // Use OWASP ZAP to scan the code for vulnerabilities
+                sh 'zap-baseline.py -t http://localhost:8080 -r security-report.html'
+                archiveArtifacts 'security-report.html'
             }
         }
         stage('Deploy to Staging') {
