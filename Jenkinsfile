@@ -32,8 +32,10 @@ pipeline {
         }
         stage('Code Analysis') {
             steps {
-                // Run code analysis using tools like SonarQube
-                sh 'sonar-scanner'
+                // Use SonarQube to analyze the code
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar'
+                }
             }
         }
         stage('Security Scan') {
