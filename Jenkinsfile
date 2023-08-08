@@ -8,7 +8,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Build the code using a build automation tool such as Maven
-                sh 'mvn clean install'
+                sh 'mvn clean package'
             }
         }
         stage('Unit and Integration Tests') {
