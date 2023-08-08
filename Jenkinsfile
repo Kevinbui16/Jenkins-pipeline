@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         // Use the configured Maven installation
-        maven 'Maven 3.3.9'
+        maven 'Maven'
         jdk 'jdk8'
         
     }
