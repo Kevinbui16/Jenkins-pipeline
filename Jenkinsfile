@@ -1,6 +1,9 @@
 pipeline {
     agent any
-
+    tools {
+        // Use the configured Maven installation
+        maven 'Maven'
+    }
     stages {
         stage('Build') {
             steps {
