@@ -38,9 +38,8 @@ pipeline {
         }
         stage('Security Scan') {
             steps {
-                // Use OWASP ZAP to scan the code for vulnerabilities
-                sh 'zap-baseline.py -t http://localhost:8080 -r security-report.html'
-                archiveArtifacts 'security-report.html'
+                // Use an online security scanning service such as Snyk, WhiteSource Bolt, or Black Duck
+                sh 'curl -X POST -H "Content-Type: application/json" -H "Authorization: token YOUR_API_TOKEN" -d @snyk.json https://snyk.io/api/v1/test'
             }
         }
         stage('Deploy to Staging') {
