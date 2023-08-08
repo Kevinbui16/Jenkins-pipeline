@@ -1,76 +1,68 @@
 pipeline {
     agent any
-    tools {
-        // Use the configured Maven installation
-        maven 'Maven'
-        jdk 'jdk8'
-        
-    }
+
     stages {
         stage('Build') {
             steps {
-                // Build using Maven
+                // Use Maven to build the code
                 sh 'mvn clean package'
             }
         }
+
         stage('Unit and Integration Tests') {
             steps {
-                // Run unit tests
+                // Use JUnit and Selenium to run unit and integration tests
                 sh 'mvn test'
-                // Run integration tests
-                sh 'mvn integration-test'
             }
         }
+
         stage('Code Analysis') {
             steps {
-                // Run code analysis using tools like SonarQube
-                sh 'sonar-scanner'
+                // Use SonarQube to analyze the code
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar'
+                }
             }
         }
+
         stage('Security Scan') {
             steps {
-                // Run security scans using tools like OWASP Dependency-Check
-                sh 'dependency-check.sh'
+                // Use OWASP ZAP to scan the code for vulnerabilities
+                sh 'zap-baseline.py -t http://localhost:8080 -r security-report.html'
+                archiveArtifacts 'security-report.html'
             }
         }
+
         stage('Deploy to Staging') {
             steps {
-                // Deploy to staging server (e.g., AWS EC2)
-                sh 'jenkins-deploy-staging.sh'
+                // Use SSH to deploy the application to a staging server
+                sshagent(['my-ssh-credentials']) {
+                    sh 'ssh user@staging-server "cd /path/to/application && ./deploy.sh"'
+                }
             }
         }
+
         stage('Integration Tests on Staging') {
             steps {
-                // Run integration tests on staging
-                sh 'selenium-tests.sh'
+                // Use JUnit and Selenium to run integration tests on the staging environment
+                sh 'mvn test'
             }
         }
+
         stage('Deploy to Production') {
             steps {
-                // Deploy to production server (e.g., AWS EC2)
-                sh 'jenkins-deploy-production.sh'
+                // Use SSH to deploy the application to a production server
+                sshagent(['my-ssh-credentials']) {
+                    sh 'ssh user@production-server "cd /path/to/application && ./deploy.sh"'
+                }
             }
         }
     }
 
     post {
-        failure {
-            // Send email on pipeline failure
-            emailext(
-                subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
-                body: "The pipeline ${currentBuild.fullDisplayName} has failed.",
-                attachLog: true,
-                recipientProviders: [[$class: 'CulpritsRecipientProvider']]
-            )
-        }
-        success {
-            // Send email on pipeline success
-            emailext(
-                subject: "Pipeline Succeeded: ${currentBuild.fullDisplayName}",
-                body: "The pipeline ${currentBuild.fullDisplayName} has succeeded.",
-                attachLog: true,
-                recipientProviders: [[$class: 'CulpritsRecipientProvider']]
-            )
+        always {
+            // Send notification email with logs as attachment
+            emailext attachLog: true, body: 'Pipeline finished', subject: 'Pipeline status: ${currentBuild.currentResult}', to: 'email@example.com'
         }
     }
 }
