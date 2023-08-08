@@ -44,10 +44,8 @@ pipeline {
         }
         stage('Deploy to Staging') {
             steps {
-                // Use SSH to deploy the application to a staging server
-                sshagent(['my-ssh-credentials']) {
-                    sh 'ssh user@staging-server "cd /path/to/application && ./deploy.sh"'
-                }
+                // Use AWS Elastic Beanstalk to deploy the application to a staging environment
+                sh 'eb deploy my-staging-environment'
             }
         }
         stage('Integration Tests on Staging') {
