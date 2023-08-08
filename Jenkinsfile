@@ -32,10 +32,8 @@ pipeline {
         }
         stage('Code Analysis') {
             steps {
-                // Use SonarQube to analyze the code
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar'
-                }
+                // Use an online code analysis service such as Codacy, Code Climate, or SonarCloud
+                sh 'curl -X POST -F "projectToken=YOUR_PROJECT_TOKEN" -F "commitUUID=${GIT_COMMIT}" https://api.codacy.com/2.0/coverage/${BUILD_NUMBER}/java'
             }
         }
         stage('Security Scan') {
