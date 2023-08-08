@@ -79,7 +79,7 @@ pipeline {
                 subject: "Pipeline Succeeded: ${currentBuild.fullDisplayName}",
                 body: "The pipeline ${currentBuild.fullDisplayName} has succeeded.",
                 attachLog: true,
-                mail to: 'kelvin0906115598@gmail.com', // Add the recipient email here
+                to: 'kelvin0906115598@gmail.com', // Add the recipient email here
                 recipientProviders: [[$class: 'CulpritsRecipientProvider']]
             )
         }
