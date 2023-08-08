@@ -17,9 +17,9 @@ pipeline {
             steps {
                 // Navigate to the directory containing the pom.xml
                     
-                    // Build using Maven
-                    sh 'mvn clean package'
-                }
+                // Build using Maven
+                sh 'mvn clean package'
+                
             }
         }
         stage('Unit and Integration Tests') {
