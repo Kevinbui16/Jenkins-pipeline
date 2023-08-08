@@ -44,8 +44,10 @@ pipeline {
         }
         stage('Deploy to Staging') {
             steps {
-                // Deploy to staging server (e.g., AWS EC2)
-                sh 'jenkins-deploy-staging.sh'
+                // Use SSH to deploy the application to a staging server
+                sshagent(['my-ssh-credentials']) {
+                    sh 'ssh user@staging-server "cd /path/to/application && ./deploy.sh"'
+                }
             }
         }
         stage('Integration Tests on Staging') {
