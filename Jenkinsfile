@@ -16,7 +16,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Navigate to the directory containing the pom.xml
-                dir('path/to/directory/containing/pom') {
+                
                     // Build using Maven
                     sh 'mvn clean package'
                 }
