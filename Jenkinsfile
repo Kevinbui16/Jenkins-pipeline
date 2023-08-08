@@ -65,23 +65,8 @@ pipeline {
     }
 
     post {
-        failure {
-            // Send email on pipeline failure
-            emailext(
-                subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
-                body: "The pipeline ${currentBuild.fullDisplayName} has failed.",
-                attachLog: true,
-                recipientProviders: [[$class: 'CulpritsRecipientProvider']]
-            )
-        }
-        success {
-            emailext(
-                subject: "Pipeline Succeeded: ${currentBuild.fullDisplayName}",
-                body: "The pipeline ${currentBuild.fullDisplayName} has succeeded.",
-                attachLog: true,
-                to: 'kelvin0906115598@gmail.com', // Add the recipient email here
-                recipientProviders: [[$class: 'CulpritsRecipientProvider']]
-            )
+        always {
+            mail bcc: '', body: 'Thong bao ket qua build', cc: 'kelvinbui0906115598@gmail.com', from: '', replyTo: '' , subject: 'Thong bao ket qua build', to: 'kelvinbui0906115598@gmail.com'
         }
     }
 }
