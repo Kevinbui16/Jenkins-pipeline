@@ -1,49 +1,68 @@
 pipeline {
     agent any
+
     stages {
         stage('Build') {
             steps {
-                // Build the code using a build automation tool such as Maven
-                sh 'mvn clean install'
+                // Use Maven to build the code
+                sh 'mvn clean package'
             }
         }
+
         stage('Unit and Integration Tests') {
             steps {
-                // Run unit and integration tests using test automation tools such as JUnit or TestNG
+                // Use JUnit and Selenium to run unit and integration tests
                 sh 'mvn test'
             }
         }
+
         stage('Code Analysis') {
             steps {
-                // Integrate a code analysis tool such as SonarQube to analyze the code and ensure it meets industry standards
+                // Use SonarQube to analyze the code
                 withSonarQubeEnv('SonarQube') {
                     sh 'mvn sonar:sonar'
                 }
             }
         }
+
         stage('Security Scan') {
             steps {
-                // Perform a security scan on the code using a tool such as OWASP ZAP to identify any vulnerabilities
-                sh 'zap-cli quick-scan --self-contained --start-options "-config api.disablekey=true" http://localhost:8080'
+                // Use OWASP ZAP to scan the code for vulnerabilities
+                sh 'zap-baseline.py -t http://localhost:8080 -r security-report.html'
+                archiveArtifacts 'security-report.html'
             }
         }
+
         stage('Deploy to Staging') {
             steps {
-                // Deploy the application to a staging server such as an AWS EC2 instance
-                sh 'scp target/my-app.war ec2-user@staging-server:/var/lib/tomcat8/webapps/'
+                // Use SSH to deploy the application to a staging server
+                sshagent(['my-ssh-credentials']) {
+                    sh 'ssh user@staging-server "cd /path/to/application && ./deploy.sh"'
+                }
             }
         }
+
         stage('Integration Tests on Staging') {
             steps {
-                // Run integration tests on the staging environment to ensure the application functions as expected in a production-like environment
-                sh 'mvn verify -Dskip.surefire.tests=true -Dskip.unit.tests=true'
+                // Use JUnit and Selenium to run integration tests on the staging environment
+                sh 'mvn test'
             }
         }
+
         stage('Deploy to Production') {
             steps {
-                // Deploy the application to a production server such as an AWS EC2 instance
-                sh 'scp target/my-app.war ec2-user@production-server:/var/lib/tomcat8/webapps/'
+                // Use SSH to deploy the application to a production server
+                sshagent(['my-ssh-credentials']) {
+                    sh 'ssh user@production-server "cd /path/to/application && ./deploy.sh"'
+                }
             }
+        }
+    }
+
+    post {
+        always {
+            // Send notification email with logs as attachment
+            emailext attachLog: true, body: 'Pipeline finished', subject: 'Pipeline status: ${currentBuild.currentResult}', to: 'email@example.com'
         }
     }
 }
