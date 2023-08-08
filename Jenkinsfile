@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         // Use the configured Maven installation
-        maven 'Maven'
+        maven 'Maven2'
     }
     stages {
         stage('Build') {
