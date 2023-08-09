@@ -50,7 +50,7 @@ pipeline {
                 sh 'git config --global user.name "Your Name"'
                 sh 'git add .'
                 sh 'git commit -m "Deploy to staging"'
-                sh 'git push https://gitlab.com/kevin8643032/kevinbui.git' 
+                sh 'git push git push https://gitlab.com/kevin8643032/kevinbui.git HEAD:main' 
             }
         }
 
