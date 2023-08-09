@@ -78,7 +78,7 @@ pipeline {
 
     post {
         always {
-            mail bcc: '', body: 'Jenkin', cc: 'kelvinbui0906115598@gmail.com', from: '', replyTo: '' , subject: 'Congratulation!!!Successfully transfer email', to: 'kelvinbui0906115598@gmail.com'
+            mail bcc: '', body: 'Congratulation!!!Successfully transfer email', cc: 'kelvinbui0906115598@gmail.com', from: '', replyTo: '' , subject: 'Jenkin', to: 'kelvinbui0906115598@gmail.com'
         }
     }
 }
