@@ -45,7 +45,7 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 // Use AWS Elastic Beanstalk to deploy the application to a staging environment
-                sh 'eb deploy my-staging-environment'
+                sh '/path/to/extracted/eb-cli/eb deploy my-staging-environment'
             }
         }
         stage('Integration Tests on Staging') {
