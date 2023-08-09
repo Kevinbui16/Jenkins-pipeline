@@ -64,17 +64,14 @@ pipeline {
        stage('Deploy to Production') {
             steps {
                 script {
-                    // Define the username and hostname of the production server
-                    def remoteUsername = 'your-username'
-                    def remoteHostname = 'your-ec2-instance-hostname'
+                    // Define the IP address of your deployment server
+                    def remoteIP = 'xxx.xxx.xxx.xxx'  // Replace with the actual IP address
                     
-                    // Replace 'your-username' and 'your-ec2-instance-hostname'
+                    // Prepare the deployment payload (if needed)
+                    def deploymentPayload = '{"key": "value"}'
                     
-                    // Upload application files using SCP
-                    sh "scp -i /path/to/private-key.pem -r /path/to/local/application ${remoteUsername}@${remoteHostname}:/path/to/remote/directory"
-                    
-                    // Execute deployment script remotely
-                    sh "ssh -i /path/to/private-key.pem ${remoteUsername}@${remoteHostname} 'cd /path/to/remote/directory && ./deploy.sh'"
+                    // Trigger remote deployment using curl with IP address
+                    sh "curl -X POST -H 'Content-Type: application/json' -d '${deploymentPayload}' http://${remoteIP}/deploy"
                 }
             }
         }
