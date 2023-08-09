@@ -43,14 +43,17 @@ pipeline {
             }
         }
         
-        stage('Deploy to Staging') {
+       stage('Deploy to Staging') {
             steps {
-                // Authenticate with Azure
-                withCredentials([string(credentialsId: 'my-azure-credentials', variable: 'AZURE_CREDENTIALS')]) {
-                    sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID'
+                // Package the application into a ZIP file
+                sh 'zip -r my-application.zip .'
+                // Upload the ZIP file to an S3 bucket
+                withCredentials([string(credentialsId: 'my-aws-credentials', variable: 'AWS_CREDENTIALS')]) {
+                    sh 'aws s3 cp my-application.zip s3://my-s3-bucket/my-application.zip'
                 }
-                // Deploy the application to Azure App Service
-                sh 'az webapp deployment source config-zip --resource-group my-resource-group --name my-webapp --src target/my-application.zip'
+                // Deploy the application to Elastic Beanstalk
+                sh 'aws elasticbeanstalk create-application-version --application-name my-application --version-label v1 --source-bundle S3Bucket=my-s3-bucket,S3Key=my-application.zip'
+                sh 'aws elasticbeanstalk update-environment --environment-name my-staging-environment --version-label v1'
             }
         }
         stage('Integration Tests on Staging') {
