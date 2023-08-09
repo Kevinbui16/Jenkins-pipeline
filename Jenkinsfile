@@ -61,20 +61,24 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('Deploy to Production') {
+       stage('Deploy to Production') {
             steps {
                 script {
-                    // Define the IP address of your deployment server
-                    def remoteIP = '13.77.143.53'  // Replace with the actual IP address
+                    // Define the username and hostname of the production server
+                    def remoteUsername = 'your-username'
+                    def remoteHostname = 'your-ec2-instance-hostname'
                     
-                    // Prepare the deployment payload (if needed)
-                    def deploymentPayload = '{"key": "value"}'
+                    // Replace 'your-username' and 'your-ec2-instance-hostname'
                     
-                    // Trigger remote deployment using curl with IP address
-                    sh "curl -X POST -H 'Content-Type: application/json' -d '${deploymentPayload}' http://${remoteIP}/deploy"
+                    // Upload application files using SCP
+                    sh "scp -i /path/to/private-key.pem -r /path/to/local/application ${remoteUsername}@${remoteHostname}:/path/to/remote/directory"
+                    
+                    // Execute deployment script remotely
+                    sh "ssh -i /path/to/private-key.pem ${remoteUsername}@${remoteHostname} 'cd /path/to/remote/directory && ./deploy.sh'"
                 }
             }
         }
+
     }
 
     post {
