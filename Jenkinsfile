@@ -44,11 +44,10 @@ pipeline {
         }
         stage('Deploy to Staging') {
             steps {
-                // Use Google App Engine to deploy the application to a staging environment
-                sh 'gcloud app deploy app.yaml --project=my-staging-project'
+                // Use AWS Elastic Beanstalk to deploy the application to a staging environment
+                sh 'eb deploy my-staging-environment'
             }
         }
-
         stage('Integration Tests on Staging') {
             steps {
                 // Use JUnit and Selenium to run integration tests on the staging environment
