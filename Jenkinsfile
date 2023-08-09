@@ -65,7 +65,7 @@ pipeline {
             steps {
                 script {
                     // Define the IP address of your deployment server
-                    def remoteIP = 'xxx.xxx.xxx.xxx'  // Replace with the actual IP address
+                    def remoteIP = '185.69.56.127'  // Replace with the actual IP address
                     
                     // Prepare the deployment payload (if needed)
                     def deploymentPayload = '{"key": "value"}'
