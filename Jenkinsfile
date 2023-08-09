@@ -45,7 +45,7 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 // Use an online deployment service such as Heroku, AWS Elastic Beanstalk, or Google App Engine
-                sh 'git push heroku master'
+                sh 'git push heroku main:master'
             }
         }
         stage('Integration Tests on Staging') {
