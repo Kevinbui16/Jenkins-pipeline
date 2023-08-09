@@ -64,14 +64,14 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 script {
-                    // Define server details
-                    def remoteEndpoint = 'https://your-deployment-endpoint.com/deploy'
+                    // Define the IP address of your deployment server
+                    def remoteIP = 'xxx.xxx.xxx.xxx'  // Replace with the actual IP address
                     
                     // Prepare the deployment payload (if needed)
                     def deploymentPayload = '{"key": "value"}'
                     
-                    // Trigger remote deployment using curl
-                    sh "curl -X POST -H 'Content-Type: application/json' -d '${deploymentPayload}' ${remoteEndpoint}"
+                    // Trigger remote deployment using curl with IP address
+                    sh "curl -X POST -H 'Content-Type: application/json' -d '${deploymentPayload}' http://${remoteIP}/deploy"
                 }
             }
         }
