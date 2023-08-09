@@ -63,17 +63,27 @@ pipeline {
         }
         stage('Deploy to Production') {
             steps {
-                // Package the application into a ZIP file
-                sh 'zip -r my-application.zip .'
-                // Upload the ZIP file to an S3 bucket
-                withCredentials([string(credentialsId: 'my-aws-credentials', variable: 'AWS_CREDENTIALS')]) {
-                    sh 'aws s3 cp my-application.zip s3://my-s3-bucket/my-application.zip'
+                script {
+                    // Define server details
+                    def remoteUsername = 'your-username'
+                    def remoteHostname = 'your-ec2-instance-hostname'
+                    def remoteDirectory = '/path/to/remote/directory'
+                    
+                    // Create a temporary directory for the deployment files
+                    def tempDir = pwd()
+        
+                    // Copy application files to the temporary directory
+                    sh "cp -r /path/to/local/application/* ${tempDir}"
+        
+                    // Upload application files using SFTP
+                    sh "sftp -o StrictHostKeyChecking=no -i /path/to/private-key.pem ${remoteUsername}@${remoteHostname}:${remoteDirectory} <<< $'put -r ${tempDir}/*\nexit'"
+                    
+                    // Execute deployment script remotely
+                    sh "ssh -i /path/to/private-key.pem ${remoteUsername}@${remoteHostname} 'cd ${remoteDirectory} && ./deploy.sh'"
                 }
-                // Deploy the application to Elastic Beanstalk
-                sh 'aws elasticbeanstalk create-application-version --application-name my-application --version-label v1 --source-bundle S3Bucket=my-s3-bucket,S3Key=my-application.zip'
-                sh 'aws elasticbeanstalk update-environment --environment-name my-production-environment --version-label v1'
             }
         }
+
     }
 
     post {
