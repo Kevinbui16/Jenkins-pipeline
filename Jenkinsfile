@@ -50,8 +50,8 @@ pipeline {
         }
         stage('Integration Tests on Staging') {
             steps {
-                // Run integration tests on staging
-                sh 'selenium-tests.sh'
+                // Use JUnit and Selenium to run integration tests on the staging environment
+                sh 'mvn test'
             }
         }
         stage('Deploy to Production') {
