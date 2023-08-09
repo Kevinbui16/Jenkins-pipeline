@@ -44,10 +44,11 @@ pipeline {
         }
         stage('Deploy to Staging') {
             steps {
-                // Use an online deployment service such as Heroku, AWS Elastic Beanstalk, or Google App Engine
-                sh 'git push heroku main:master'
+                // Use Google App Engine to deploy the application to a staging environment
+                sh 'gcloud app deploy app.yaml --project=my-staging-project'
             }
         }
+
         stage('Integration Tests on Staging') {
             steps {
                 // Use JUnit and Selenium to run integration tests on the staging environment
