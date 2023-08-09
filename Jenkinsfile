@@ -63,17 +63,15 @@ pipeline {
         }
         stage('Deploy to Production') {
             steps {
-                // Package the application into a ZIP file
-                sh 'zip -r my-application.zip .'
-                // Upload the ZIP file to an S3 bucket
-                withCredentials([string(credentialsId: 'my-aws-credentials', variable: 'AWS_CREDENTIALS')]) {
-                    sh 'aws s3 cp my-application.zip s3://my-s3-bucket/my-application.zip'
+                // Authenticate with Heroku
+                withCredentials([string(credentialsId: 'my-heroku-api-key', variable: 'HEROKU_API_KEY')]) {
+                    sh 'heroku login -i'
                 }
-                // Deploy the application to Elastic Beanstalk
-                sh 'aws elasticbeanstalk create-application-version --application-name my-application --version-label v1 --source-bundle S3Bucket=my-s3-bucket,S3Key=my-application.zip'
-                sh 'aws elasticbeanstalk update-environment --environment-name my-production-environment --version-label v1'
+                // Deploy the application to Heroku
+                sh 'git push heroku master'
             }
         }
+
 
     }
 
