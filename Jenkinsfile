@@ -44,10 +44,20 @@ pipeline {
         }
         stage('Deploy to Staging') {
             steps {
-                // Use AWS Elastic Beanstalk to deploy the application to a staging environment
-                sh '/path/to/extracted/eb-cli/eb deploy my-staging-environment'
+                // Build the Docker image
+                sh 'docker build -t my-application .'
+                // Push the Docker image to a container registry
+                withCredentials([string(credentialsId: 'my-docker-registry-credentials', variable: 'DOCKER_REGISTRY_PASSWORD')]) {
+                    sh 'docker login -u my-username -p $DOCKER_REGISTRY_PASSWORD my-docker-registry.example.com'
+                    sh 'docker push my-docker-registry.example.com/my-application'
+                }
+                // Use SSH to deploy the Docker container to a staging server
+                sshagent(['my-ssh-credentials']) {
+                    sh 'ssh user@staging-server "docker pull my-docker-registry.example.com/my-application && docker run -d -p 80:80 my-docker-registry.example.com/my-application"'
+                }
             }
         }
+
         stage('Integration Tests on Staging') {
             steps {
                 // Use JUnit and Selenium to run integration tests on the staging environment
