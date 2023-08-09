@@ -45,14 +45,13 @@ pipeline {
         
        stage('Deploy to Staging') {
             steps {
-                // Authenticate with Heroku
-                withCredentials([string(credentialsId: 'my-heroku-api-key', variable: 'HEROKU_API_KEY')]) {
-                    sh 'heroku login -i'
-                }
-                // Deploy the application to Heroku
-                sh 'git push heroku master'
+                // Install the Netlify CLI
+                sh 'npm install -g netlify-cli'
+                // Deploy the application to Netlify
+                sh 'netlify deploy --dir public --prod'
             }
         }
+
 
         stage('Integration Tests on Staging') {
             steps {
