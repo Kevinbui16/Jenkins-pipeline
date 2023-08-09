@@ -65,25 +65,16 @@ pipeline {
             steps {
                 script {
                     // Define server details
-                    def remoteUsername = 'your-username'
-                    def remoteHostname = 'your-ec2-instance-hostname'
-                    def remoteDirectory = '/path/to/remote/directory'
+                    def remoteEndpoint = 'https://your-deployment-endpoint.com/deploy'
                     
-                    // Create a temporary directory for the deployment files
-                    def tempDir = pwd()
-        
-                    // Copy application files to the temporary directory
-                    sh "cp -r /path/to/local/application/* ${tempDir}"
-        
-                    // Upload application files using SFTP
-                    sh "sftp -o StrictHostKeyChecking=no -i /path/to/private-key.pem ${remoteUsername}@${remoteHostname}:${remoteDirectory} <<< $'put -r ${tempDir}/*\nexit'"
+                    // Prepare the deployment payload (if needed)
+                    def deploymentPayload = '{"key": "value"}'
                     
-                    // Execute deployment script remotely
-                    sh "ssh -i /path/to/private-key.pem ${remoteUsername}@${remoteHostname} 'cd ${remoteDirectory} && ./deploy.sh'"
+                    // Trigger remote deployment using curl
+                    sh "curl -X POST -H 'Content-Type: application/json' -d '${deploymentPayload}' ${remoteEndpoint}"
                 }
             }
         }
-
     }
 
     post {
