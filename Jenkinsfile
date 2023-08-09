@@ -45,16 +45,15 @@ pipeline {
         
        stage('Deploy to Staging') {
             steps {
-                // Commit and push changes to the GitHub repository
-                withCredentials([usernamePassword(credentialsId: 'my-github-credentials', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
-                    sh 'git config --global user.email "you@example.com"'
-                    sh 'git config --global user.name "Your Name"'
-                    sh 'git add .'
-                    sh 'git commit -m "Deploy to staging"'
-                    sh 'git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/your-username/your-repository.git'
-                }
+                // Commit and push changes to the GitLab repository
+                sh 'git config --global user.email "you@example.com"'
+                sh 'git config --global user.name "Your Name"'
+                sh 'git add .'
+                sh 'git commit -m "Deploy to staging"'
+                sh 'git push https://gitlab.com/your-username/your-repository.git'
             }
         }
+
         stage('Integration Tests on Staging') {
             steps {
                 // Use JUnit and Selenium to run integration tests on the staging environment
