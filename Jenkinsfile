@@ -79,7 +79,7 @@ pipeline {
 
     post {
         always {
-            mail bcc: '', body: 'Thong bao ket qua build', cc: 'kelvinbui0906115598@gmail.com', from: '', replyTo: '' , subject: 'Thong bao ket qua build', to: 'kelvinbui0906115598@gmail.com'
+            mail bcc: '', body: 'Congratulation!!!Successfully transfer email', cc: 'kelvinbui0906115598@gmail.com', from: '', replyTo: '' , subject: 'Congratulation!!!Successfully transfer email', to: 'kelvinbui0906115598@gmail.com'
         }
     }
 }
