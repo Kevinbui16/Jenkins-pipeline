@@ -42,22 +42,17 @@ pipeline {
                 sh 'curl -X POST -H "Content-Type: application/json" -H "Authorization: token YOUR_API_TOKEN" -d @snyk.json https://snyk.io/api/v1/test'
             }
         }
+        
         stage('Deploy to Staging') {
             steps {
-                // Build the Docker image
-                sh 'docker build -t my-application .'
-                // Push the Docker image to a container registry
-                withCredentials([string(credentialsId: 'my-docker-registry-credentials', variable: 'DOCKER_REGISTRY_PASSWORD')]) {
-                    sh 'docker login -u my-username -p $DOCKER_REGISTRY_PASSWORD my-docker-registry.example.com'
-                    sh 'docker push my-docker-registry.example.com/my-application'
+                // Authenticate with Azure
+                withCredentials([string(credentialsId: 'my-azure-credentials', variable: 'AZURE_CREDENTIALS')]) {
+                    sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID'
                 }
-                // Use SSH to deploy the Docker container to a staging server
-                sshagent(['my-ssh-credentials']) {
-                    sh 'ssh user@staging-server "docker pull my-docker-registry.example.com/my-application && docker run -d -p 80:80 my-docker-registry.example.com/my-application"'
-                }
+                // Deploy the application to Azure App Service
+                sh 'az webapp deployment source config-zip --resource-group my-resource-group --name my-webapp --src target/my-application.zip'
             }
         }
-
         stage('Integration Tests on Staging') {
             steps {
                 // Use JUnit and Selenium to run integration tests on the staging environment
