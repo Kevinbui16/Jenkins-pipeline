@@ -64,17 +64,21 @@ pipeline {
        stage('Deploy to Production') {
             steps {
                 script {
-                    sh './deploy staging'
-                    sh './run-smoke-tests'
+                    def remoteIP = 'xxx.xxx.xxx.xxx'
+                    def deploymentPayload = '{"key": "value"}'
+                    
+                    // Trigger remote deployment using curl with IP address
+                    sh "curl -X POST -H 'Content-Type: application/json' -d '${deploymentPayload}' http://${remoteIP}/deploy"
                 }
             }
         }
+
 
     }
 
     post {
         always {
-            mail bcc: '', body: 'Congratulation!!!Successfully transfer email', cc: 'kelvinbui0906115598@gmail.com', from: '', replyTo: '' , subject: 'Congratulation!!!Successfully transfer email', to: 'kelvinbui0906115598@gmail.com'
+            mail bcc: '', body: 'Jenkin', cc: 'kelvinbui0906115598@gmail.com', from: '', replyTo: '' , subject: 'Congratulation!!!Successfully transfer email', to: 'kelvinbui0906115598@gmail.com'
         }
     }
 }
