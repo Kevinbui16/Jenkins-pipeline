@@ -4,7 +4,6 @@ pipeline {
         // Use the configured Maven installation
         maven 'Maven'
         jdk 'jdk8'
-        
     }
     stages {
         stage('Checkout') {
@@ -14,12 +13,9 @@ pipeline {
             }
         }
         stage('Build') {
-            steps {
-                // Navigate to the directory containing the pom.xml
-                    
+            steps {   
                 // Build using Maven
                 sh 'mvn clean package'
-                
             }
         }
         stage('Unit and Integration Tests') {
@@ -32,13 +28,13 @@ pipeline {
         }
         stage('Code Analysis') {
             steps {
-                // Use an online code analysis service such as Codacy, Code Climate, or SonarCloud
+                // Use an online code analysis service
                 sh 'curl -X POST -F "projectToken=YOUR_PROJECT_TOKEN" -F "commitUUID=${GIT_COMMIT}" https://api.codacy.com/2.0/coverage/${BUILD_NUMBER}/java'
             }
         }
         stage('Security Scan') {
             steps {
-                // Use an online security scanning service such as Snyk, WhiteSource Bolt, or Black Duck
+                // Use an online security scanning service
                 sh 'curl -X POST -H "Content-Type: application/json" -H "Authorization: token YOUR_API_TOKEN" -d @snyk.json https://snyk.io/api/v1/test'
             }
         }
@@ -72,12 +68,10 @@ pipeline {
                 }
             }
         }
-
-
     }
-
     post {
         always {
+            //post email
             mail bcc: '', body: 'Congratulation!!!Successfully transfer email', cc: 'kelvinbui0906115598@gmail.com', from: '', replyTo: '' , subject: 'Jenkin', to: 'kelvinbui0906115598@gmail.com'
         }
     }
