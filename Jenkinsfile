@@ -1,7 +1,7 @@
 pipeline {
     agent any
     // tools {
-    //     // Use the configured Maven installation
+    //      // Use the configured Maven installation
     //     maven 'Maven'
     //     jdk 'jdk8'
     // }
